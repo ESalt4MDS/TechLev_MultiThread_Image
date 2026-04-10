@@ -1,4 +1,6 @@
 #pragma once
+#include <chrono>
+#include <thread>
 class CTask
 {
 public:
@@ -14,7 +16,8 @@ public:
 
 	virtual void DoWork()
 	{
-		
+		std::this_thread::sleep_for(std::chrono::milliseconds((rand() % 100) + 50));
+		printf("Task %i complete\n", m_data);
 	}
 
 private:
