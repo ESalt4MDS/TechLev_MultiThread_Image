@@ -29,13 +29,13 @@ void CManager::RunProgram()
     */
 
     CImageLoader loader;
-    loader.LoadFiles();
+    loader.LoadFiles(SetType::SMALL);
     
 
     /*std::vector<sf::Texture> m_textures;
     CThreadPool pool;*/
 
-    sf::RenderWindow window(sf::VideoMode({ 512, 512 }), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode({ 1000, 1000 }), "SFML works!");
 
     /*std::vector<std::string> fileNames;
 
