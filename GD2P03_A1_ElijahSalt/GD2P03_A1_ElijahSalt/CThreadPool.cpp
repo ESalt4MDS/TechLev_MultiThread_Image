@@ -1,10 +1,9 @@
 #include "CThreadPool.h"
 
-CThreadPool::CThreadPool()
+CThreadPool::CThreadPool(int _threadCount) : m_threadCount(_threadCount)
 {
-	m_numThreads = std::thread::hardware_concurrency();
-	m_tasksProcessed = 0;
-	for (unsigned int i = 0; i < m_numThreads; i++)
+	m_tasksDone = 0;
+	for (int i = 0; i < m_threadCount; i++)
 	{
 		m_threads.push_back(std::thread(&CThreadPool::WorkerThread, this));
 	}
@@ -12,25 +11,19 @@ CThreadPool::CThreadPool()
 
 CThreadPool::~CThreadPool()
 {
-	/*for (int i = 0; i < m_numThreads; i++)
-	{
-		m_threads[i].join();
-	}
-	m_finished = true;*/
-
 	Stop();
 }
 
-void CThreadPool::Submit(CTask _task)
+void CThreadPool::Start()
 {
-	m_taskQueue.Push(_task);
+	m_finished = false;
 }
 
 void CThreadPool::Stop()
 {
 	m_finished = true;
 	m_taskQueue.UnblockAll();
-	for (unsigned int i = 0; i < m_numThreads; i++)
+	for (int i = 0; i < m_threadCount; i++)
 	{
 		if (m_threads[i].joinable())
 		{
@@ -39,20 +32,26 @@ void CThreadPool::Stop()
 	}
 }
 
-int CThreadPool::TasksProcessed()
+int CThreadPool::TasksDone()
 {
-	return m_tasksProcessed;
+	return m_tasksDone;
+}
+
+int CThreadPool::GetNumTasks()
+{
+	return m_taskQueue.Count();
 }
 
 void CThreadPool::WorkerThread()
 {
-	CTask task;
 	while (!m_finished)
 	{
+		std::function<void()> task;
 		if (m_taskQueue.BlockPop(task))
 		{
-			task.DoWork();
-			m_tasksProcessed++;
+			task();
+			m_tasksDone++;
 		}
 	}
 }
+

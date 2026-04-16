@@ -2,10 +2,15 @@
 
 CManager::CManager()
 {
+    m_loader = new CImageLoader();
 }
 
 CManager::~CManager()
 {
+    delete m_window;
+    m_window = nullptr;
+
+
 }
 
 void CManager::RunProgram()
@@ -27,53 +32,43 @@ void CManager::RunProgram()
     pool.Stop();
     printf("done\n");
     */
-
-    CImageLoader loader;
-    loader.LoadFiles(SetType::SMALL);
+    //CImageLoader m_loader;
     
+    //m_loader->LoadFiles(SetType::SMALL);
+    m_loader->LoadFiles(SetType::LARGE);
 
-    /*std::vector<sf::Texture> m_textures;
-    CThreadPool pool;*/
+    m_window = new sf::RenderWindow(sf::VideoMode({ 1000, 1000 }), "SFML works!");
 
-    sf::RenderWindow window(sf::VideoMode({ 1000, 1000 }), "SFML works!");
 
-    /*std::vector<std::string> fileNames;
-
-    std::string path = std::filesystem::current_path().string();
-    path.append("\\small set");
-    for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(path))
+    while (m_window->isOpen())
     {
-        fileNames.push_back(entry.path().string());
-    }
-
-    for (auto iter : fileNames)
-    {
-        std::cout << iter << std::endl;
-    }
-
-    sf::Texture texture;
-    texture.loadFromFile(fileNames[3]);
-    sf::Sprite sprite(texture);
-    sprite.setScale({ 0.25f, 0.25f });*/
-
-
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
+        while (const std::optional event = m_window->pollEvent())
         {
             if (event->is<sf::Event::Closed>())
-                window.close();
+                m_window->close();
 
             if (const auto* resized = event->getIf<sf::Event::Resized>())
             {
                 sf::FloatRect visibleArea({ 0.0f, 0.0f }, sf::Vector2f(resized->size));
-                window.setView(sf::View(visibleArea));
+                m_window->setView(sf::View(visibleArea));
             }
         }
 
-        window.clear();
-        /*window.draw(sprite);*/
-        loader.DrawImages(window);
-        window.display();
+        m_window->clear();
+
+        m_loader->DrawImages(*m_window);
+
+        m_window->display();
+        //Draw();
     }
+}
+
+void CManager::Draw()
+{
+    m_window->clear();
+
+    //m_loader.DrawImages(*m_window);
+
+    m_window->display();
+
 }

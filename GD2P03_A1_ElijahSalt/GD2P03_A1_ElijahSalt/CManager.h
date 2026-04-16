@@ -12,9 +12,12 @@ public:
 	CManager();
 	~CManager();
 
+	
 	void RunProgram();
+	void Draw();
 
 private:
-
+	sf::RenderWindow* m_window;
+	CImageLoader* m_loader;
 };
 
