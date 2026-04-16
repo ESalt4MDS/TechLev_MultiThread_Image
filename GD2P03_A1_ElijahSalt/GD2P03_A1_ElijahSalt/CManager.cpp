@@ -15,29 +15,11 @@ CManager::~CManager()
 
 void CManager::RunProgram()
 {
-    /*
-    const int totalTasks = 50;
-
-    CThreadPool pool;
-
-    for (int i = 0; i < totalTasks; i++)
-    {
-        pool.Submit(CTask(i));
-        printf("task %i pushed to work queue\n", i);
-    }
-    printf("\n\n");
-
-    while (pool.TasksProcessed() < totalTasks);
-
-    pool.Stop();
-    printf("done\n");
-    */
-    //CImageLoader m_loader;
     
-    m_loader->LoadFiles(SetType::SMALL);
-    //m_loader->LoadFiles(SetType::LARGE);
+    //m_loader->LoadFiles(SetType::SMALL);
+    m_loader->LoadFiles(SetType::LARGE);
 
-    m_window = new sf::RenderWindow(sf::VideoMode({ 1000, 1000 }), "SFML works!");
+    m_window = new sf::RenderWindow(sf::VideoMode({ 1000, 1000 }), "Images!");
 
 
     while (m_window->isOpen())
@@ -54,12 +36,7 @@ void CManager::RunProgram()
             }
         }
 
-        m_window->clear();
-
-        m_loader->DrawImages(*m_window);
-
-        m_window->display();
-        //Draw();
+        Draw();
     }
 }
 
@@ -67,7 +44,7 @@ void CManager::Draw()
 {
     m_window->clear();
 
-    //m_loader.DrawImages(*m_window);
+    m_loader->DrawImages(*m_window);
 
     m_window->display();
 
