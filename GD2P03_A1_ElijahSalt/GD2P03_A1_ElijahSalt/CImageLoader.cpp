@@ -18,6 +18,12 @@ CImageLoader::~CImageLoader()
         delete iter;
         iter = nullptr;
     }
+
+    for (auto iter : m_imagePositions)
+    {
+        delete iter;
+        iter = nullptr;
+    }
 }
 
 void CImageLoader::LoadFiles(SetType _set)
@@ -77,45 +83,58 @@ void CImageLoader::LoadImages()
 
     CThreadPool pool(threadCount);
 
-    std::vector<std::future<sf::Sprite*>> futures;
+    std::vector<std::future<sf::Sprite*>> spriteFutures;
+
+    //set position of sprite images in a grid
+    /*float colCount = 0.0f;
+    float rowCount = 0.0f;*/
 
     for (int i = 0; i < m_fileNames.size(); i++)
     {
-        //std::wstring fileName = m_fileNames[i];
-        //auto fut = pool.Submit([fileName]()
-        //{
-        //    //load texture with the image and store texture in vector
-        //    sf::Texture* texture = new sf::Texture(fileName);
-        //    float scaleX = 200.0f / texture->getSize().x;
-        //    float scaleY = 200.0f / texture->getSize().y;
-        //    texture->setSmooth(true);
+        /*if (colCount >= 5.0f)
+        {
+            colCount = 0.0f;
+            rowCount++;
+        }*/
 
-        //    //create sprite to hold texture to display to screen and store sprite in vector
-        //    sf::Sprite* sprite = new sf::Sprite(*texture);
-        //    sprite->setScale({ scaleX, scaleY });
+        std::wstring fileName = m_fileNames[i];
+        auto fut = pool.Submit([fileName]()
+        {
+            //load texture with the image and store texture in vector
+            sf::Texture* texture = new sf::Texture(fileName);
+            float scaleX = 200.0f / texture->getSize().x;
+            float scaleY = 200.0f / texture->getSize().y;
+            texture->setSmooth(true);
 
-        //    return sprite;
-        //});
-        //futures.push_back(std::move(fut));
+            //create sprite to hold texture to display to screen and store sprite in vector
+            sf::Sprite* sprite = new sf::Sprite(*texture);
+            sprite->setScale({ scaleX, scaleY });
+            //sprite->setPosition({ 200.0f * colCount, 200.0f * rowCount });
+
+            return sprite;
+        });
+        spriteFutures.push_back(std::move(fut));
+
+
         
+        //colCount++;
 
-        //load texture with the image and store texture in vector
-        sf::Texture* texture = new sf::Texture(m_fileNames[i]);
-        float scaleX = 200.0f / texture->getSize().x;
-        float scaleY = 200.0f / texture->getSize().y;
-        texture->setSmooth(true);
-        m_textures.push_back(texture);
 
-        //create sprite to hold texture to display to screen and store sprite in vector
-        sf::Sprite* sprite = new sf::Sprite(*texture);
-        sprite->setScale({ scaleX, scaleY });
-        m_imageSprites.push_back(sprite);
+        ////load texture with the image and store texture in vector
+        //sf::Texture* texture = new sf::Texture(m_fileNames[i]);
+        //float scaleX = 200.0f / texture->getSize().x;
+        //float scaleY = 200.0f / texture->getSize().y;
+        //texture->setSmooth(true);
+        //m_textures.push_back(texture);
+
+        ////create sprite to hold texture to display to screen and store sprite in vector
+        //sf::Sprite* sprite = new sf::Sprite(*texture);
+        //sprite->setScale({ scaleX, scaleY });
+        //m_imageSprites.push_back(sprite);
 
 
     }
-    //pool.Start();
-
-    //while (pool.TasksDone() < pool.GetNumTasks());
+    pool.Start();
 
     //for (auto& fut : futures)
     //{
@@ -123,13 +142,20 @@ void CImageLoader::LoadImages()
     //    m_imageSprites.push_back(fut.get());
     //}
 
-    //pool.Stop();
+    while (pool.TasksDone() < pool.GetNumTasks());
+
+    for (auto& fut : spriteFutures)
+    {
+        m_imageSprites.push_back(fut.get());
+    }
+
+    pool.Stop();
 
     //set position of sprite images in a grid
     float colCount = 0.0f;
     float rowCount = 0.0f;
 
-    for (int i = 0; i < m_imageSprites.size(); i++)
+    for (int i = 0; i < 25; i++)
     {
         if (colCount >= 5.0f)
         {
@@ -137,7 +163,8 @@ void CImageLoader::LoadImages()
             rowCount++;
         }
 
-        m_imageSprites[i]->setPosition({ 200.0f * colCount, 200.0f * rowCount });
+        sf::Vector2f* position = new sf::Vector2f(200.0f * colCount, 200.0f * rowCount);
+        m_imagePositions.push_back(position);
 
         colCount++;
 
@@ -146,11 +173,32 @@ void CImageLoader::LoadImages()
 
 void CImageLoader::DrawImages(sf::RenderWindow& _window)
 {
-    for (int i = 0; i < m_imageSprites.size(); i++)
-    {
+    /*int threadCount = std::thread::hardware_concurrency();
 
+    CThreadPool pool(threadCount);*/
+
+    //std::vector<std::future<void>> futures;
+
+    for (int i = 0; i < m_imagePositions.size(); i++)
+    {
+       /* sf::Sprite* imageSprite = m_imageSprites[i];
+        auto fut = pool.Submit([&_window, imageSprite]()
+        {*/
+        if (i >= m_imageSprites.size())
+        {
+            break;
+        }
+        m_imageSprites[i]->setPosition(*m_imagePositions[i]);
         _window.draw(*m_imageSprites[i]);
+
+        //});
     }
+    /*pool.Start();
+
+    while (pool.TasksDone() < pool.GetNumTasks());
+
+    pool.Stop();*/
+
 }
 
 

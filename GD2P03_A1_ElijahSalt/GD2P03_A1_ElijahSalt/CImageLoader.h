@@ -27,5 +27,6 @@ private:
 	std::vector<std::wstring> m_fileNames;
 	std::vector<sf::Texture*> m_textures;
 	std::vector<sf::Sprite*> m_imageSprites;
+	std::vector<sf::Vector2f*> m_imagePositions;
 
 };

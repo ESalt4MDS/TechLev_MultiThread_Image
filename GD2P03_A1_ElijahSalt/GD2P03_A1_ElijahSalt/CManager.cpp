@@ -34,8 +34,8 @@ void CManager::RunProgram()
     */
     //CImageLoader m_loader;
     
-    //m_loader->LoadFiles(SetType::SMALL);
-    m_loader->LoadFiles(SetType::LARGE);
+    m_loader->LoadFiles(SetType::SMALL);
+    //m_loader->LoadFiles(SetType::LARGE);
 
     m_window = new sf::RenderWindow(sf::VideoMode({ 1000, 1000 }), "SFML works!");
 
