@@ -42,6 +42,24 @@ void CImageLoader::LoadFiles(SetType _set)
             break;
     }
 
+    if (!m_fileNames.empty())
+    {
+        m_fileNames.clear();
+    }
+    if (!m_imageSprites.empty())
+    {
+        m_imageSprites.clear();
+    }
+    if (!m_imagePositions.empty())
+    {
+        m_imagePositions.clear();
+    }
+    if (!m_imagesInGrid.empty())
+    {
+        m_imagesInGrid.clear();
+    }
+
+
     /*int threadCount = std::thread::hardware_concurrency();
 
     CThreadPool pool(threadCount);
