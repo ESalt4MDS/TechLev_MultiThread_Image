@@ -133,7 +133,6 @@
   <ItemGroup>
     <ClCompile Include="CImageLoader.cpp" />
     <ClCompile Include="CManager.cpp" />
-    <ClCompile Include="CTask.cpp" />
     <ClCompile Include="CThreadPool.cpp" />
     <ClCompile Include="CWorkQueue.cpp" />
     <ClCompile Include="main.cpp" />
@@ -141,7 +140,6 @@
   <ItemGroup>
     <ClInclude Include="CImageLoader.h" />
     <ClInclude Include="CManager.h" />
-    <ClInclude Include="CTask.h" />
     <ClInclude Include="CThreadPool.h" />
     <ClInclude Include="CWorkQueue.h" />
   </ItemGroup>

@@ -1,3 +1,17 @@
+//************************************************************************
+//Bachelor of Software Engineering
+//Media Design School
+//Auckland
+//New Zealand
+//
+//File Name : [CWorkQueue.h]
+//Description : [handles thread pool queues]
+//Author : [Elijah Salt]
+//Email : [elijah.salt@mds.ac.nz]
+//
+//(c) Elijah Salt
+//************************************************************************
+
 #pragma once
 #include <queue>
 #include <mutex>
@@ -9,11 +23,41 @@ public:
 	CWorkQueue() {}
 	~CWorkQueue() {}
 
+	/*
+	* push tasks to queue
+	Parameters:
+
+	Returns:
+	- void
+	*/
 	void Push(const T& _item);
 	bool Pop(T& _item);
 
+	/*
+	* 
+	Parameters:
+
+	Returns:
+	- void
+	*/
 	bool BlockPop(T& _item);
+
+	/*
+	* number of tasks the pool is handling
+	Parameters:
+
+	Returns:
+	- int: the number of tasks
+	*/
 	int Count() const;
+
+	/*
+	*
+	Parameters:
+
+	Returns:
+	- void
+	*/
 	void UnblockAll();
 
 

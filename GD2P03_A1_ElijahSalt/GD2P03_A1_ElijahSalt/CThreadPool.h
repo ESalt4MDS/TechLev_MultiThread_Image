@@ -1,3 +1,17 @@
+//************************************************************************
+//Bachelor of Software Engineering
+//Media Design School
+//Auckland
+//New Zealand
+//
+//File Name : [CThreadPool.h]
+//Description : [handles the threads in the pool]
+//Author : [Elijah Salt]
+//Email : [elijah.salt@mds.ac.nz]
+//
+//(c) Elijah Salt
+//************************************************************************
+
 #pragma once
 #include <vector>
 #include <thread>
@@ -17,9 +31,24 @@ public:
 
 	int TasksDone();
 
+	/*
+	* submit any type of task with any amount of variables
+	Parameters:
+	- F&& _func: reference to a function
+	- Args&& ..._args: to a number of variables
+	Returns:
+	- auto: returns a future of any return type
+	*/
 	template <class F, class ...Args>
 	auto Submit(F&& _func, Args&& ..._args);
 
+	/*
+	* the number of tasks the pool is handling
+	Parameters:
+
+	Returns:
+	- int: the number of tasks
+	*/
 	int GetNumTasks();
 
 private:

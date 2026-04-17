@@ -115,6 +115,11 @@ void CImageLoader::LoadImages()
 
     pool.Stop();
 
+    SetupImageGrid();
+}
+
+void CImageLoader::SetupImageGrid()
+{
     //set position of sprite images in a grid 5x5
     float colCount = 0.0f;
     float rowCount = 0.0f;
@@ -134,11 +139,6 @@ void CImageLoader::LoadImages()
 
     }
 
-    SetupImageGrid();
-}
-
-void CImageLoader::SetupImageGrid()
-{
     for (int i = 0; i < m_imagePositions.size(); i++)
     {
         if (i >= m_imageSprites.size())

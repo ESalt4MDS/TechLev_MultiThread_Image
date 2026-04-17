@@ -1,3 +1,17 @@
+//************************************************************************
+//Bachelor of Software Engineering
+//Media Design School
+//Auckland
+//New Zealand
+//
+//File Name : [CImageLoader.h]
+//Description : [loads images from files and draws]
+//Author : [Elijah Salt]
+//Email : [elijah.salt@mds.ac.nz]
+//
+//(c) Elijah Salt
+//************************************************************************
+
 #pragma once
 #include <vector>
 #include <string>
@@ -16,11 +30,40 @@ public:
 	CImageLoader();
 	~CImageLoader();
 
+	/*
+	* load the files paths into a std::vector
+	Parameters:
+	- SetType _set: an enum of the set to load
+	Returns:
+	- void
+	*/
 	void LoadFiles(SetType _set);
+
+	/*
+	* load the images into a sprite
+	Parameters:
+
+	Returns:
+	- void
+	*/
 	void LoadImages();
+
+	/*
+	* setup image positions into a grid 
+	Parameters:
+
+	Returns:
+	- void
+	*/
 	void SetupImageGrid();
 
+	/*
+	* draw images to window
+	Parameters:
 
+	Returns:
+	- void
+	*/
 	void DrawImages(sf::RenderWindow* _window);
 
 private:
