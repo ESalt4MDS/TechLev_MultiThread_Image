@@ -18,9 +18,10 @@ public:
 
 	void LoadFiles(SetType _set);
 	void LoadImages();
+	void SetupImageGrid();
 
 
-	void DrawImages(sf::RenderWindow &_window);
+	void DrawImages(sf::RenderWindow* _window);
 
 private:
 
@@ -28,5 +29,6 @@ private:
 	std::vector<sf::Texture*> m_textures;
 	std::vector<sf::Sprite*> m_imageSprites;
 	std::vector<sf::Vector2f*> m_imagePositions;
+	std::vector< sf::Sprite*> m_imagesInGrid;
 
 };
