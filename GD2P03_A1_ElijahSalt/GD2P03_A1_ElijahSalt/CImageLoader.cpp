@@ -42,6 +42,8 @@ void CImageLoader::LoadFiles(SetType _set)
             break;
     }
 
+    //clear vectors if not empty
+    //when changing between sets
     if (!m_fileNames.empty())
     {
         m_fileNames.clear();
@@ -58,102 +60,60 @@ void CImageLoader::LoadFiles(SetType _set)
     {
         m_imagesInGrid.clear();
     }
+    if (!m_textures.empty())
+    {
+        m_textures.clear();
+    }
 
-
-    /*int threadCount = std::thread::hardware_concurrency();
-
-    CThreadPool pool(threadCount);
-
-    std::vector<std::future<std::wstring>> futures;*/
-    //int c = 0;
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(path))
     {
         std::wstring imagePath = entry.path().wstring();
-        //c++;
-        ////std::cout << "image: " << c << " " << imagePath << "\n" << std::endl;
-        //auto fut = pool.Submit([imagePath]()
-        //{
-        //    std::wstring fileName;
-        //    fileName = imagePath;
-        //    return fileName;
-        //});
-        //futures.push_back(std::move(fut));
         m_fileNames.push_back(imagePath);
     }
-    /*pool.Start();
-
-    while (pool.TasksDone() < pool.GetNumTasks());
-
-    for (auto& fut : futures)
-    {
-        std::wstring fileName = fut.get();
-        m_fileNames.push_back(fileName);
-    }
-
-    pool.Stop();*/
 
     LoadImages();
 }
 
 void CImageLoader::LoadImages()
 {
-    /*int threadCount = std::thread::hardware_concurrency();
+    int threadCount = std::thread::hardware_concurrency();
 
     CThreadPool pool(threadCount);
 
-    std::vector<std::future<sf::Sprite*>> spriteFutures;*/
+    std::vector<std::future<sf::Sprite*>> spriteFutures;
 
     for (int i = 0; i < m_fileNames.size(); i++)
     {
         std::wstring fileName = m_fileNames[i];
         std::wcout << m_fileNames[i] << std::endl;
-        
-        //load texture with the image and store texture in vector
-        sf::Texture* texture = new sf::Texture();
-        if (!texture->loadFromFile(fileName))
+
+        auto fut = pool.Submit([fileName, i]()
         {
-            std::wcout << "failed to load image from file: " << fileName << std::endl;
-        }
-        float scaleX = 200.0f / texture->getSize().x;
-        float scaleY = 200.0f / texture->getSize().y;
-        texture->setSmooth(true);
+            //load texture with the image and store texture in vector
+            sf::Texture* texture = new sf::Texture(fileName);
 
-        //create sprite from texture to display to screen and store sprite in vector
-        sf::Sprite* sprite = new sf::Sprite(*texture);
-        sprite->setScale({ scaleX, scaleY });
+            float scaleX = 200.0f / texture->getSize().x;
+            float scaleY = 200.0f / texture->getSize().y;
+            texture->setSmooth(true);
 
-        m_imageSprites.push_back(sprite);
+            //create sprite from texture to display to screen and store sprite in vector
+            sf::Sprite* sprite = new sf::Sprite(*texture);
+            sprite->setScale({ scaleX, scaleY });
 
-        //auto fut = pool.Submit([texture]()
-        //{
-        //    //load texture with the image and store texture in vector
-        //    /*sf::Texture* texture = new sf::Texture();
-        //    texture->loadFromFile(fileName);*/
-        //    //std::wcout << "second: " << fileName << "\n" << std::endl;
-
-        //    float scaleX = 200.0f / texture->getSize().x;
-        //    float scaleY = 200.0f / texture->getSize().y;
-        //    texture->setSmooth(true);
-
-        //    //create sprite from texture to display to screen and store sprite in vector
-        //    sf::Sprite* sprite = new sf::Sprite(*texture);
-        //    sprite->setScale({ scaleX, scaleY });
-
-        //    return sprite;
-        //});
-        //spriteFutures.push_back(std::move(fut));
+            return sprite;
+        });
+        spriteFutures.push_back(std::move(fut));
     }
-    /*pool.Start();
+    pool.Start();
 
     for (auto& fut : spriteFutures)
     {
-
         m_imageSprites.push_back(fut.get());
     }
 
     while (pool.TasksDone() < pool.GetNumTasks());
 
-    pool.Stop();*/
+    pool.Stop();
 
     //set position of sprite images in a grid 5x5
     float colCount = 0.0f;
